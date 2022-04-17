@@ -3,7 +3,7 @@
 
 import sys
 import json
-from mxp.utils import *
+import os
 from biliup.downloader import download
 from biliup.plugins.bili_webup import BiliBili, Data
 
@@ -23,9 +23,9 @@ def downloadVideo(url, infofn='/tmp/tt.json', save_path='/tmp',video_quality='72
             "video_quality": video_quality,
             },                                    
             "ffmpeg_location": "/usr/bin/ffmpeg",
-            "log_path": "/tmp/logs",
+            "log_path": "/tmp/",
         }
-    saveJson2File(info, infofn)
+    json.dump(info, open(infofn,'w'))
     cmd = f'''cd dl ;
     unset http_proxy
 unset socks_proxy
@@ -38,9 +38,10 @@ export http_proxy="http://127.0.0.1:7890"
 export https_proxy="http://127.0.0.1:7890"
 export no_proxy="localhost, 127.0.0.1"
 export 
-    python itubego-dl.py {infofn}
+    python3 itubego-dl.py {infofn}
     '''
-    runCmd(cmd);
+    os.system(cmd)
+    #runCmd(cmd);
 
 def getVideoDlLog(url, infofn='/tmp/tt.json', save_path='/tmp',video_quality='720P', logfn='/tmp/tt.log'):
     info = {                                  
@@ -59,9 +60,10 @@ def getVideoDlLog(url, infofn='/tmp/tt.json', save_path='/tmp',video_quality='72
             "video_quality": video_quality,
             },                                    
             "ffmpeg_location": "/usr/bin/ffmpeg",
-            "log_path": "/tmp/logs",
+            "log_path": "/tmp/",
         }
-    saveJson2File(info, infofn)
+    #saveJson2File(info, infofn)
+    json.dump(info,open(infofn,'w'))
     cmd = f'''cd dl ;
     unset http_proxy
 unset socks_proxy
@@ -74,9 +76,10 @@ export http_proxy="http://127.0.0.1:7890"
 export https_proxy="http://127.0.0.1:7890"
 export no_proxy="localhost, 127.0.0.1"
 export 
-    python itubego-dl.py {infofn} | tee {logfn}
+    python3 itubego-dl.py {infofn} | tee {logfn}
     '''
-    runCmd(cmd);
+    #runCmd(cmd);
+    os.system(cmd)
 
 LOG_FN='/tmp/tt.log'
 TMP_VIDEOFN='/tmp/tt.mp4'
@@ -92,9 +95,9 @@ def uploadBiliBilit(title, tags, videofn, coverfn, tid=17):
     video.tid = tid
     video.set_tag(tags)
     cmd= f'cp "{videofn}" {TMP_VIDEOFN}'
-    runCmd(cmd)
+    os.system(cmd)# runCmd(cmd)
     cmd= f'convert "{coverfn}" {TMP_COVERFN}'
-    runCmd(cmd)
+    os.system(cmd)# runCmd(cmd)
     file_list=[TMP_VIDEOFN]
     print(video)
     with BiliBili(video) as bili:
